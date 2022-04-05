@@ -17,17 +17,17 @@ namespace iotlink_webapi.Controllers
             this._placeServices = placeServices;
         }
         [HttpGet]
-        public IActionResult GetPlace()
+        public async Task<IActionResult> GetPlace()
         {
-            var places =  _placeServices.Get();
+            var places = await _placeServices.Get();
             return Ok(places);
         }
 
         [HttpGet]
         [Route("{name}")]
-        public ActionResult<PlaceEntity> GetPlaceByName([FromRoute ]string name)
+        public async Task<ActionResult<PlaceEntity>> GetPlaceByName([FromRoute ]string name)
         {
-            var place = _placeServices.Get(name);
+            var place = await _placeServices.Get(name);
 
             if (place == null)
                 return NotFound();
@@ -35,35 +35,35 @@ namespace iotlink_webapi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(PlaceEntity place)
+        public async Task<IActionResult> Create(PlaceEntity place)
         {
-            _placeServices.Create(place);
+            await _placeServices.Create(place);
             return CreatedAtAction(nameof(GetPlace), new { name = place.Name }, place);
 
         }
 
         [HttpPut]
-        public IActionResult Update(string name, PlaceEntity placeIn)
+        public async Task<IActionResult> Update(string name, PlaceEntity placeIn)
         {
-            var place = _placeServices.Get(name);
+            var place = await _placeServices.Get(name);
 
             if (place == null)
             {
                 return NotFound();
             }
 
-            _placeServices.Update(name, place);
+            await _placeServices.Update(name, place);
             return Content("Success");
         }
 
         [HttpDelete]
-        public IActionResult Delete(string name)
+        public async Task<IActionResult> Delete(string name)
         {
-            var place = _placeServices.Get(name);
+            var place = await _placeServices.Get(name);
 
             if (place == null) { return NotFound(); }
 
-            _placeServices.Remove(place);
+            await _placeServices.Remove(place);
 
             return Content("Success");
         }

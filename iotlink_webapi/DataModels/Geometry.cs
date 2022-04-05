@@ -12,6 +12,6 @@ namespace iotlink_webapi.DataModels
         [BsonElement("type")]
         public string Type { get; set; }
         [BsonElement("coordinates")]
-        public IList<double> Coordinates { get; set; }
+        public IList<object> Coordinates { get; set; }
     }
 }

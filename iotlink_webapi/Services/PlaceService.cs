@@ -1,6 +1,7 @@
 ﻿using iotlink_webapi.DataModels;
 using MongoDB.Driver;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace iotlink_webapi.Services
 {
@@ -17,25 +18,25 @@ namespace iotlink_webapi.Services
 
         }
 
-        public List<PlaceEntity> Get() => 
-            _places.Find(place => true).ToList();
-        public PlaceEntity Get(string name) =>
-            _places.Find<PlaceEntity>(place => place.Name == name).FirstOrDefault();
+        public async Task<List<PlaceEntity>> Get() => 
+            await _places.Find(place => true).ToListAsync();
+        public async Task<PlaceEntity> Get(string name) =>
+            await _places.Find<PlaceEntity>(place => place.Name == name).FirstOrDefaultAsync();
 
-        public PlaceEntity Create(PlaceEntity place)
+        public async Task<PlaceEntity> Create(PlaceEntity place)
         {
-            _places.InsertOne(place);
+            await _places.InsertOneAsync(place);
             return place;
         }
 
-        public void Update(string name, PlaceEntity placeIn)
+        public async Task Update(string name, PlaceEntity placeIn)
         {
-            _places.ReplaceOne(place => place.Name == name, placeIn);
+           await _places.ReplaceOneAsync(place => place.Name == name, placeIn);
         }
 
-        public void Remove(PlaceEntity placeIn)
+        public async Task Remove(PlaceEntity placeIn)
         {
-            _places.DeleteOne(place => place.Name == placeIn.Name);
+            await _places.DeleteOneAsync(place => place.Name == placeIn.Name);
         }
 
     }
