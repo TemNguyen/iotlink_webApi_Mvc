@@ -17,5 +17,6 @@ namespace iotlink_webapi.DataModels
         public Location Location { get; set; }
         [BsonElement("geometry")]
         public Geometry Geometry { get; set; }
+        public Account Account { get; set; }
     }
 }

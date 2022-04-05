@@ -20,6 +20,7 @@ namespace iotlink_webapi.Services
 
         public async Task<List<PlaceEntity>> Get() => 
             await _places.Find(place => true).ToListAsync();
+
         public async Task<PlaceEntity> Get(string name) =>
             await _places.Find<PlaceEntity>(place => place.Name == name).FirstOrDefaultAsync();
 

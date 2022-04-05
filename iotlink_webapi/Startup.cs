@@ -32,6 +32,7 @@ namespace iotlink_webapi
             services.Configure<MongoDatabaseSettings>(Configuration.GetSection(nameof(MongoDatabaseSettings)));
             services.AddSingleton<IMongoDatabaseSettings>(m => m.GetRequiredService<IOptions<MongoDatabaseSettings>>().Value);
             services.AddSingleton<PlaceService>();
+            services.AddSingleton<AccountService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
