@@ -21,23 +21,21 @@ namespace iotlink_webapi.Services
         public async Task<List<Account>> Get() =>
             await _accounts.Find(account => true).ToListAsync();
 
-        public async Task<Account> Get(string username) =>
-            await _accounts.Find<Account>(account => account.Username == username).FirstOrDefaultAsync();
+        public async Task<Account> Get(string id) =>
+            await _accounts.Find<Account>(account => account.Id == id).FirstOrDefaultAsync();
 
         public async Task<Account> Create(Account account)
         {
             await _accounts.InsertOneAsync(account);
             return account;
         }
-
-        public async Task Update(string name, Account accountIn)
+        public async Task Update(string id, Account account)
         {
-            await _accounts.ReplaceOneAsync(account => account.Username == name, accountIn);
+            await _accounts.ReplaceOneAsync(accountIn => accountIn.Id == id, account);
         }
-
         public async Task Remove(Account accountIn)
         {
-            await _accounts.DeleteOneAsync(account => account.Username == accountIn.Username);
+            await _accounts.DeleteOneAsync(account => account.Id == accountIn.Id);
         }
     }
 }

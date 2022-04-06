@@ -21,8 +21,8 @@ namespace iotlink_webapi.Services
         public async Task<List<PlaceEntity>> Get() => 
             await _places.Find(place => true).ToListAsync();
 
-        public async Task<PlaceEntity> Get(string name) =>
-            await _places.Find<PlaceEntity>(place => place.Name == name).FirstOrDefaultAsync();
+        public async Task<PlaceEntity> Get(string id) =>
+            await _places.Find<PlaceEntity>(place => place.Id == id).FirstOrDefaultAsync();
 
         public async Task<PlaceEntity> Create(PlaceEntity place)
         {
@@ -30,9 +30,9 @@ namespace iotlink_webapi.Services
             return place;
         }
 
-        public async Task Update(string name, PlaceEntity placeIn)
+        public async Task Update(string id, PlaceEntity place)
         {
-           await _places.ReplaceOneAsync(place => place.Name == name, placeIn);
+           await _places.ReplaceOneAsync(place => place.Name == id, place);
         }
 
         public async Task Remove(PlaceEntity placeIn)
