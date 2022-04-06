@@ -5,19 +5,16 @@ using System.Threading.Tasks;
 
 namespace iotlink_webapi.Services
 {
-    public class AccountService
+    public class AccountService : IAccountService
     {
         private readonly IMongoCollection<Account> _accounts;
-
         public AccountService(IMongoDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
             _accounts = database.GetCollection<Account>("Account");
-
         }
-
         public async Task<List<Account>> Get() =>
             await _accounts.Find(account => true).ToListAsync();
 

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace iotlink_webapi.Services
 {
-    public class PlaceService
+    public class PlaceService : IPlaceService
     {
         private readonly IMongoCollection<PlaceEntity> _places;
 
@@ -39,6 +39,5 @@ namespace iotlink_webapi.Services
         {
             await _places.DeleteOneAsync(place => place.Name == placeIn.Name);
         }
-
     }
 }

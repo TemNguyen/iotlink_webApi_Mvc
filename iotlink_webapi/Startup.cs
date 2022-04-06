@@ -36,6 +36,8 @@ namespace iotlink_webapi
             services.AddSingleton<IMongoDatabaseSettings>(m => m.GetRequiredService<IOptions<MongoDatabaseSettings>>().Value);
             services.AddSingleton<PlaceService>();
             services.AddSingleton<AccountService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IPlaceService, PlaceService>();
             services.AddControllers();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
