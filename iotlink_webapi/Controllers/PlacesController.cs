@@ -1,5 +1,6 @@
 ﻿using iotlink_webapi.DataModels;
 using iotlink_webapi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -35,6 +36,7 @@ namespace iotlink_webapi.Controllers
             return place;
         }
         // POST: api/Places
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(PlaceEntity place)
         {

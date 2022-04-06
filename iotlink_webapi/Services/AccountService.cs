@@ -22,8 +22,11 @@ namespace iotlink_webapi.Services
             await _accounts.Find(account => true).ToListAsync();
 
         public async Task<Account> Get(string id) =>
-            await _accounts.Find<Account>(account => account.Id == id).FirstOrDefaultAsync();
+            await _accounts.Find(account => account.Id == id).FirstOrDefaultAsync();
 
+        public async Task<Account> Get(string username, string password) =>
+            await _accounts.Find<Account>(account => account.Username == username && account.Password == password)
+                                        .FirstOrDefaultAsync();
         public async Task<Account> Create(Account account)
         {
             await _accounts.InsertOneAsync(account);
