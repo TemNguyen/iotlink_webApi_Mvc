@@ -98,8 +98,18 @@ namespace iotlink_webapi
 
         private async Task CheckStatusCode(HttpContext context)
         {
-            if (context.Response.StatusCode != 200 || context.Response.StatusCode != 201)
+            if (context.Response.StatusCode != 200 && context.Response.StatusCode != 201)
             {
+                if (context.Response.StatusCode == (int)HttpStatusCode.BadRequest)
+                {
+                    _response = new Response<PlaceEntity>()
+                    {
+                        Status = "bad_request",
+                        Message = "Máy chủ không thể hiểu yêu cầu do cú pháp không hợp lệ",
+                        Data = null
+                    };
+                }
+
                 if (context.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
                 {
                     _response = new Response<PlaceEntity>()
@@ -107,8 +117,7 @@ namespace iotlink_webapi
                         Status = "not_authen",
                         Message = "Chưa có authen",
                         Data = null
-                    };
-                    
+                    };  
                 }
 
                 if (context.Response.StatusCode == (int)HttpStatusCode.Forbidden)
@@ -117,6 +126,56 @@ namespace iotlink_webapi
                     {
                         Status = "not_have_role",
                         Message = "Bạn không có quyền sử dụng chức năng này",
+                        Data = null
+                    };
+                }
+
+                if (context.Response.StatusCode == (int)HttpStatusCode.NotFound)
+                {
+                    _response = new Response<PlaceEntity>()
+                    {
+                        Status = "not_found",
+                        Message = "Không tìm thấy trang này",
+                        Data = null
+                    };
+                }
+
+                if (context.Response.StatusCode == (int)HttpStatusCode.RequestTimeout)
+                {
+                    _response = new Response<PlaceEntity>()
+                    {
+                        Status = "requesr_timeout",
+                        Message = "Hết thời gian request",
+                        Data = null
+                    };
+                }
+
+                if (context.Response.StatusCode == (int)HttpStatusCode.InternalServerError)
+                {
+                    _response = new Response<PlaceEntity>()
+                    {
+                        Status = "internal_server_error",
+                        Message = "",
+                        Data = null
+                    };
+                }
+
+                if (context.Response.StatusCode == (int)HttpStatusCode.BadGateway)
+                {
+                    _response = new Response<PlaceEntity>()
+                    {
+                        Status = "bad_gateway",
+                        Message = "502 Bad Gateway",
+                        Data = null
+                    };
+                }
+
+                if (context.Response.StatusCode == (int)HttpStatusCode.GatewayTimeout)
+                {
+                    _response = new Response<PlaceEntity>()
+                    {
+                        Status = "gateway_time_out",
+                        Message = "Máy chủ mất quá nhiều thời gian để phản hồi",
                         Data = null
                     };
                 }
