@@ -1,8 +1,9 @@
-using iotlink_webapi.DataModels;
+﻿using iotlink_webapi.DataModels;
 using iotlink_webapi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -12,16 +13,20 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace iotlink_webapi
 {
     public class Startup
     {
+        private Response<PlaceEntity> _response;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -46,6 +51,7 @@ namespace iotlink_webapi
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
+                    ValidateLifetime = true,
                     ValidateAudience = true,
                     ValidAudience = Configuration["Jwt:Audience"],
                     ValidIssuer = Configuration["Jwt:Issuer"],
@@ -75,12 +81,51 @@ namespace iotlink_webapi
             
             app.UseRouting();
 
+            app.Use(async (context, next) =>
+            {
+                await next();
+
+                await CheckStatusCode(context);
+            });
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private async Task CheckStatusCode(HttpContext context)
+        {
+            if (context.Response.StatusCode != 200 || context.Response.StatusCode != 201)
+            {
+                if (context.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
+                {
+                    _response = new Response<PlaceEntity>()
+                    {
+                        Status = "not_authen",
+                        Message = "Chưa có authen",
+                        Data = null
+                    };
+                    
+                }
+
+                if (context.Response.StatusCode == (int)HttpStatusCode.Forbidden)
+                {
+                    _response = new Response<PlaceEntity>()
+                    {
+                        Status = "not_have_role",
+                        Message = "Bạn không có quyền sử dụng chức năng này",
+                        Data = null
+                    };
+                }
+
+                context.Response.StatusCode = 200;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(_response));
+            }
+            
         }
     }
 }

@@ -2,7 +2,7 @@
 using iotlink_webapi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using iotlink_webapi;
 using System.Threading.Tasks;
 
 namespace iotlink_webapi.Controllers
@@ -60,6 +60,7 @@ namespace iotlink_webapi.Controllers
             return Content("Success");
         }
         // DELETE: api/Places/id
+        [Authorize(Roles = "admin")]
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] string id)
@@ -70,7 +71,12 @@ namespace iotlink_webapi.Controllers
 
             await _placeServices.Remove(place);
 
-            return Content("Success");
+            return new JsonResult(new Response<PlaceEntity>()
+            {
+                Status = "ok",
+                Message = null,
+                Data = place
+            });
         }
     }
 }

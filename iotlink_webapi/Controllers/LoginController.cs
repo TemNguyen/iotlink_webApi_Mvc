@@ -13,19 +13,19 @@ namespace iotlink_webapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TokenController : Controller
+    public class LoginController : Controller
     {
         private readonly AccountService _accountServices;
         private readonly IConfiguration _config;
 
-        public TokenController(IConfiguration config, AccountService accountServices)
+        public LoginController(IConfiguration config, AccountService accountServices)
         {
             this._config = config;
             this._accountServices = accountServices;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Account account)
+        public async Task<IActionResult> Login(Account account)
         {
             if (account != null)
             {
@@ -39,7 +39,9 @@ namespace iotlink_webapi.Controllers
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                         new Claim("Id", accountIn.Id.ToString()),
-                        new Claim("Username", accountIn.Username)
+                        new Claim("Username", accountIn.Username),
+                        
+                        accountIn.Roles.Contains("admin") ? new Claim(ClaimTypes.Role, "admin") : null
                     };
 
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));

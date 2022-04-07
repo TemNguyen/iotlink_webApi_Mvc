@@ -34,7 +34,6 @@ namespace iotlink_webapi.Services
         {
            await _places.ReplaceOneAsync(place => place.Name == id, place);
         }
-
         public async Task Remove(PlaceEntity placeIn)
         {
             await _places.DeleteOneAsync(place => place.Name == placeIn.Name);
